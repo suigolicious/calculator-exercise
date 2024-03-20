@@ -7,8 +7,8 @@
 
 .reverse-polish-calculator {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-direction: row;
+  justify-content: center;
 
   .row-bottom {
     display: flex;
@@ -28,5 +28,14 @@
         height: 8.25rem;
       }
     }
+  }
+
+  .stack {
+    border: 1px solid rgb(133, 133, 133);
+    margin-left: 0.5rem;
+    flex-direction: column;
+    font-size: 1.5rem;
+    width: 3rem;
+    margin-bottom: 0.55rem;
   }
 }
