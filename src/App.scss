@@ -1,0 +1,32 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.reverse-polish-calculator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .row-bottom {
+    display: flex;
+
+    .numeric-bottom-buttons {
+      flex-direction: column;
+    }
+
+    .wider-button {
+      button {
+        width: 8.25rem;
+      }
+    }
+
+    .taller-button {
+      button {
+        height: 8.25rem;
+      }
+    }
+  }
+}
