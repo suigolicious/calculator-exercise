@@ -9,6 +9,15 @@ function App() {
     setActiveValue(e.currentTarget.innerText);
   };
 
+  const startClearStack = () => {
+    if (activeValue) {
+      setActiveValue('');
+    } else {
+      const firstInStack = stack.shift();
+      firstInStack && setActiveValue(firstInStack);
+    }
+  };
+
   const handleOperatorClicked = (e: FormEvent<HTMLButtonElement>) => {
     const operator = e.currentTarget.innerText;
 
@@ -34,11 +43,14 @@ function App() {
     const stackOperator = e.currentTarget.innerText;
     switch (stackOperator) {
       case "CLR":
-      // clear active OR move stack to active
+        // clear active OR move stack to active
+        startClearStack();
+        break;
       case "ENTER":
         // put number into stack and erase active field
         setStack([activeValue, ...stack]);
         setActiveValue('');
+        break;
     }
   };
 
