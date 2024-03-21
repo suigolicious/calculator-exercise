@@ -19,23 +19,27 @@
 
     .wider-button {
       button {
-        width: 8.25rem;
+        width: 8.5rem;
       }
     }
 
     .taller-button {
       button {
-        height: 8.25rem;
+        height: 8.5rem;
       }
     }
   }
 
   .stack {
     border: 1px solid rgb(133, 133, 133);
+    border-right: hidden;
+    border-bottom: hidden;
+    text-align: left;
+    padding: 0 0.25rem;
     margin-left: 0.5rem;
     flex-direction: column;
-    font-size: 1.5rem;
-    width: 3rem;
+    font-size: 1.25rem;
+    width: 6rem;
     margin-bottom: 0.55rem;
   }
 }

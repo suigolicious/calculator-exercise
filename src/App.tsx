@@ -1,41 +1,79 @@
-import { FormEvent, useState } from 'react'
+import { ChangeEvent, FormEvent, useState } from 'react'
 import './App.scss'
 
 function App() {
   const [activeValue, setActiveValue] = useState<string>('');
   const [stack, setStack] = useState<string[]>([]);
 
-  const handleNumberClicked = (e: FormEvent<HTMLButtonElement>) => {
-    setActiveValue(e.currentTarget.innerText);
+  const handleCheckIfValid = (input: string) => {
+    const regexp = new RegExp(/\d/);
+
+    return !!regexp.exec(input);
   };
 
-  const startClearStack = () => {
-    if (activeValue) {
-      setActiveValue('');
-    } else {
-      const firstInStack = stack.shift();
-      firstInStack && setActiveValue(firstInStack);
+  const handleNumberClicked = (e: FormEvent<HTMLButtonElement> | ChangeEvent<HTMLInputElement>) => {
+    const number = e.currentTarget.innerText || e.currentTarget.value.split('').pop();
+    if (!number) { return; }
+    const isValid = handleCheckIfValid(number);
+
+    const hasAnotherDot = activeValue.includes('.') && number === '.';
+    const hasOnlyZeros = activeValue === '0' && number === '0';
+
+    if (isValid && !hasOnlyZeros && !hasAnotherDot) {
+      const combinedNumber = activeValue + number;
+      setActiveValue(combinedNumber);
+    }
+  };
+
+  const handleNegativeClicked = () => {
+    const activeValueExists = activeValue || activeValue === '0';
+    if (activeValueExists && activeValue[0] !== '-') {
+      setActiveValue('-' + activeValue);
     }
   };
 
   const handleOperatorClicked = (e: FormEvent<HTMLButtonElement>) => {
     const operator = e.currentTarget.innerText;
-
-    // grab number(s) from stack to run calculation
+    const emptyStack = stack.length === 0;
+    const activeValueExists = activeValue || activeValue === '0';
 
     switch (operator) {
-      case "-":
-      // do negative
       case "+":
-      // do addition
-      case "x":
-      // do multiplication
-      case "/":
-      // do division
-      case "^":
-      // do exponent
+        if (activeValueExists && !emptyStack) {
+          const result = Number(stack.pop()) + Number(activeValue);
+          const shortenedStack = [...stack];
+          setStack(shortenedStack); // force a re-render of the stack
+          setActiveValue(result.toString());
+        }
 
-      // default: TODO for keyboard input
+        break;
+      case "x":
+        if (activeValueExists && !emptyStack) {
+          const result = Number(stack.pop()) * Number(activeValue);
+          const shortenedStack = [...stack];
+          setStack(shortenedStack);
+          setActiveValue(result.toString());
+        }
+
+        break;
+      case "/":
+        if (activeValueExists && !emptyStack) {
+          const result = Number(stack.pop()) / Number(activeValue);
+          const shortenedStack = [...stack];
+          setStack(shortenedStack);
+          setActiveValue(result.toString());
+        }
+
+        break;
+      case "^":
+        if (activeValueExists && !emptyStack) {
+          const result = Number(activeValue) ** Number(stack.pop());
+          const shortenedStack = [...stack];
+          setStack(shortenedStack);
+          setActiveValue(result.toString());
+        }
+
+        break;
     }
   };
 
@@ -44,12 +82,22 @@ function App() {
     switch (stackOperator) {
       case "CLR":
         // clear active OR move stack to active
-        startClearStack();
+        if (activeValue) {
+          setActiveValue('');
+        } else {
+          const firstInStack = stack.pop();
+          firstInStack && setActiveValue(firstInStack);
+        }
+
         break;
       case "ENTER":
         // put number into stack and erase active field
-        setStack([activeValue, ...stack]);
-        setActiveValue('');
+        if (activeValue) {
+          const cleanedNumber = Number(activeValue).toString();
+          setStack([...stack, cleanedNumber]);
+          setActiveValue('');
+        }
+
         break;
     }
   };
@@ -57,17 +105,21 @@ function App() {
   return (
     <>
       <h1>Reverse Polish Notation Calculator</h1>
-      <h2>The '-' sign negates the value only</h2>
+      <h2>
+        The '-' sign negates the value only (no subtraction)
+        <br />
+        'CLR' either clears the active number or makes the first in the stack active
+      </h2>
       <div className="reverse-polish-calculator">
         <div className='calculator'>
           <input
             type='text'
             value={activeValue}
-            onChange={() => { }} // to do for typing on keyboard
+            onChange={(e) => handleNumberClicked(e)} // to do for typing on keyboard
           />
           <div className='row'>
             <button type='button' onClick={(e) => handleStackOperatorClicked(e)}>CLR</button>
-            <button type='button' onClick={(e) => handleOperatorClicked(e)}>-</button>
+            <button type='button' onClick={(e) => handleNegativeClicked()}>-</button>
             <button type='button' onClick={(e) => handleOperatorClicked(e)}>/</button>
             <button type='button' onClick={(e) => handleOperatorClicked(e)}>x</button>
           </div>
