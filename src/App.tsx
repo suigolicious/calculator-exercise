@@ -146,6 +146,8 @@ function App() {
     <>
       <h1>Reverse Polish Notation Calculator</h1>
       <h2>
+        Power button turns the calculator on/off, clearing the active field and stack
+        <br />
         The '-' sign negates the value only (no subtraction)
         <br />
         'CLR' either clears the active number or makes the first in the stack active
