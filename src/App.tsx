@@ -14,7 +14,8 @@ function App() {
 
   const handleNumberClicked = (e: FormEvent<HTMLButtonElement> | ChangeEvent<HTMLInputElement>) => {
     const number = e.currentTarget.innerText || e.currentTarget.value.split('').pop();
-    if (!number) { return; }
+    if (!number) return;
+
     const isValid = handleCheckIfValid(number);
 
     const hasAnotherDot = activeValue.includes('.') && number === '.';
