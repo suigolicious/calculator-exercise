@@ -7,7 +7,7 @@ function App() {
   const [isShutDown, setIsShutDown] = useState(false);
 
   const handleCheckIfValid = (input: string) => {
-    const regexp = new RegExp(/\d/);
+    const regexp = new RegExp(/[0-9.]/);
 
     return !!regexp.exec(input);
   };
@@ -79,7 +79,6 @@ function App() {
       case "Log10":
         if (activeValueExists) {
           const result = Math.log10(Number(activeValue));
-          debugger;
           setActiveValue(result.toString());
         }
 
@@ -89,8 +88,7 @@ function App() {
           setStack([...stack, activeValue]);
         }
         if (stack.length === 0) { return }
-        const sortedStackGreatest = sortStack(stack);
-        setActiveValue(sortedStackGreatest[stack.length - 1]);
+        setActiveValue(sortStack(stack)[stack.length - 1]);
 
         break;
       case "<":
@@ -98,9 +96,7 @@ function App() {
           setStack([...stack, activeValue]);
         }
         if (stack.length === 0) { return }
-        const sortedStackLeast = sortStack(stack);
-
-        setActiveValue(sortedStackLeast[0]);
+        setActiveValue(sortStack(stack)[0]);
     }
   };
 
@@ -129,8 +125,11 @@ function App() {
         // put number into stack and erase active field
         if (activeValue) {
           const cleanedNumber = Number(activeValue).toString();
-          setStack([...stack, cleanedNumber]);
-          setActiveValue('');
+          const isNotValid = cleanedNumber.includes('NaN') || cleanedNumber.includes('Infinity');
+          if (!isNotValid) {
+            setStack([...stack, cleanedNumber]);
+            setActiveValue('');
+          }
         }
 
         break;
