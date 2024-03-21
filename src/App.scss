@@ -42,4 +42,19 @@
     width: 6rem;
     margin-bottom: 0.55rem;
   }
+
+  .shut-down {
+    input {
+      pointer-events: none;
+      background-color: black;
+    }
+
+    button {
+      pointer-events: none;
+    }
+
+    button.shut-down-button {
+      pointer-events: auto;
+    }
+  }
 }

@@ -4,6 +4,7 @@ import './App.scss'
 function App() {
   const [activeValue, setActiveValue] = useState<string>('');
   const [stack, setStack] = useState<string[]>([]);
+  const [isShutDown, setIsShutDown] = useState(false);
 
   const handleCheckIfValid = (input: string) => {
     const regexp = new RegExp(/\d/);
@@ -74,7 +75,40 @@ function App() {
         }
 
         break;
+      case "Log10":
+        if (activeValueExists) {
+          const result = Math.log10(Number(activeValue));
+          debugger;
+          setActiveValue(result.toString());
+        }
+
+        break;
+      case ">":
+        if (activeValueExists) {
+          setStack([...stack, activeValue]);
+        }
+        if (stack.length === 0) { return }
+        const sortedStackGreatest = sortStack(stack);
+        setActiveValue(sortedStackGreatest[stack.length - 1]);
+
+        break;
+      case "<":
+        if (activeValueExists) {
+          setStack([...stack, activeValue]);
+        }
+        if (stack.length === 0) { return }
+        const sortedStackLeast = sortStack(stack);
+
+        setActiveValue(sortedStackLeast[0]);
     }
+  };
+
+  const sortStack = (stack: string[]) => {
+    const copiedStack = [...stack];
+    const sortedStack = copiedStack.sort((a: string, b: string) => {
+      return Number(a) - Number(b);
+    });
+    return sortedStack;
   };
 
   const handleStackOperatorClicked = (e: FormEvent<HTMLButtonElement>) => {
@@ -102,6 +136,12 @@ function App() {
     }
   };
 
+  const handlePowerButtonClicked = () => {
+    setActiveValue('')
+    setStack([]);
+    setIsShutDown(!isShutDown);
+  };
+
   return (
     <>
       <h1>Reverse Polish Notation Calculator</h1>
@@ -111,7 +151,7 @@ function App() {
         'CLR' either clears the active number or makes the first in the stack active
       </h2>
       <div className="reverse-polish-calculator">
-        <div className='calculator'>
+        <div className={'calculator ' + (isShutDown ? 'shut-down' : '')}>
           <input
             type='text'
             value={activeValue}
@@ -119,7 +159,13 @@ function App() {
           />
           <div className='row'>
             <button type='button' onClick={(e) => handleStackOperatorClicked(e)}>CLR</button>
-            <button type='button' onClick={(e) => handleNegativeClicked()}>-</button>
+            <button type='button' onClick={(e) => handleOperatorClicked(e)}>{'>'}</button>
+            <button type='button' onClick={(e) => handleOperatorClicked(e)}>{'<'}</button>
+            <button className='shut-down-button' type='button' onClick={() => handlePowerButtonClicked()}>&#x23FB;</button>
+          </div>
+          <div className='row'>
+            <button type='button' onClick={(e) => handleOperatorClicked(e)}>Log10</button>
+            <button type='button' onClick={() => handleNegativeClicked()}>-</button>
             <button type='button' onClick={(e) => handleOperatorClicked(e)}>/</button>
             <button type='button' onClick={(e) => handleOperatorClicked(e)}>x</button>
           </div>
@@ -159,7 +205,7 @@ function App() {
             return <div key={index}>{number}</div>
           })}
         </div>
-      </div>
+      </div >
     </>
   )
 }

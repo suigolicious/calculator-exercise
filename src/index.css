@@ -33,6 +33,7 @@ h2 {
 }
 
 input {
+  background-color: rgb(59, 59, 59);
   font-size: 3rem;
   width: 17rem;
   text-align: center;
